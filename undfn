@@ -1,0 +1,375 @@
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noah Mendieta — Photographer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=DM+Sans:wght@300;400;500&amp;display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #111110;
+      --surface:   #1C1C1A;
+      --text:      #F0EDE8;
+      --muted:     #8A8780;
+      --amber:     #C8924A;
+      --amber-dim: #7A5A30;
+      --rule:      #2E2E2B;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      line-height: 1.7;
+      font-size: clamp(15px, 1.6vw, 17px);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Film-strip rail ── */
+    .rail {
+      position: fixed;
+      top: 0; left: 0;
+      width: 3px;
+      height: 100vh;
+      background: repeating-linear-gradient(
+        to bottom,
+        var(--amber) 0px,
+        var(--amber) 10px,
+        transparent 10px,
+        transparent 22px
+      );
+      opacity: 0.35;
+      z-index: 10;
+    }
+
+    /* ── Nav ── */
+    nav {
+      position: fixed;
+      top: 0; right: 0;
+      padding: 2rem 3rem;
+      display: flex;
+      gap: 2.5rem;
+      z-index: 20;
+    }
+
+    nav a {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: var(--text); }
+
+    /* ── Hero / Gallery ── */
+    /* ── Page top spacing for fixed nav ── */
+    body > .gallery-block,
+    body > div.gallery-block {
+      margin-top: 0;
+    }
+
+    .page-wrap {
+      padding-top: 5.5rem;
+    }
+
+    /* ── Gallery block ── */
+    .gallery-block {
+      position: relative;
+      width: calc(100% - 8rem);
+      margin: 0 auto;
+      height: 80vh;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    /* Carousel strip */
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform;
+    }
+
+    .slide {
+      flex: 0 0 100%;
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-color: var(--bg);
+      background-position: center;
+    }
+
+    .dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(240,237,232,0.3);
+      transition: background 0.3s, transform 0.3s;
+      cursor: pointer;
+    }
+    .dot.active {
+      background: var(--amber);
+      transform: scale(1.4);
+    }
+
+    /* ── Arrow buttons ── */
+    .gallery-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 4;
+      background: rgba(17,17,16,0.55);
+      border: 1px solid rgba(240,237,232,0.15);
+      color: var(--text);
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1rem;
+      line-height: 1;
+      transition: background 0.2s, border-color 0.2s;
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      user-select: none;
+    }
+    .gallery-arrow:hover {
+      background: rgba(200,146,74,0.75);
+      border-color: var(--amber);
+    }
+    .gallery-arrow.prev { left: 1rem; }
+    .gallery-arrow.next { right: 1rem; }
+
+    /* Center dots */
+    .gallery-dots {
+      position: absolute;
+      bottom: 1.2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3;
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+    }
+
+    /* ── Title block beneath gallery ── */
+    .hero-title {
+      padding: 2.2rem 4rem 2rem 4rem;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero-domain {
+      display: block;
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: clamp(3rem, 8vw, 7rem);
+      line-height: 0.9;
+      letter-spacing: -0.01em;
+      color: var(--text);
+    }
+
+    .hero-name {
+      display: block;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 0.75rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.9rem;
+    }
+
+    /* ── Main layout ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 8vw;
+    }
+
+    /* ── Section shared ── */
+    section {
+      padding: 7rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    section:last-child { border-bottom: none; }
+
+    .section-label {
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.65rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--amber);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--amber-dim);
+      opacity: 0.4;
+    }
+
+    /* ── Bio ── */
+    .bio-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .bio-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.2;
+      color: var(--text);
+    }
+    .bio-headline em { font-style: italic; color: var(--amber); }
+
+    .bio-body {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.9;
+    }
+    .bio-body p + p { margin-top: 1.2rem; }
+
+    /* ── Work links ── */
+    .work-list { list-style: none; }
+
+    .work-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: 1.6rem 0;
+      border-top: 1px solid var(--rule);
+      text-decoration: none;
+      color: inherit;
+    }
+    .work-item:last-child { border-bottom: 1px solid var(--rule); }
+    .work-item:hover .work-title { color: var(--amber); }
+    .work-item:hover .work-arrow { transform: translate(4px, -4px); color: var(--amber); }
+
+    .work-left { display: flex; align-items: baseline; gap: 2rem; }
+
+    .work-num {
+      font-size: 0.65rem;
+      color: var(--amber-dim);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+
+    .work-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      font-weight: 400;
+      transition: color 0.2s;
+    }
+
+    .work-right { display: flex; align-items: center; gap: 1.5rem; }
+
+    .work-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .work-arrow {
+      font-size: 1rem;
+      color: var(--muted);
+      transition: transform 0.2s, color 0.2s;
+      display: inline-block;
+    }
+
+    /* ── Contact ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .contact-headline {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(1.8rem, 3.5vw, 3rem);
+      font-weight: 400;
+      line-height: 1.2;
+    }
+    .contact-headline em { font-style: italic; color: var(--amber); }
+
+    .contact-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1.5rem;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .contact-type {
+      font-size: 0.65rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      width: 6rem;
+      flex-shrink: 0;
+    }
+
+    .contact-link {
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    .contact-link:hover { color: var(--amber); }
+
+    /* ── Footer ── */
+    footer {
+      padding: 2.5rem 8vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--rule);
+    }
+
+    .footer-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .footer-copy {
+      font-size: 0.68rem;
+      color: var(--amber-dim);
+      letter-spacing: 0.08em;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 720px) {
+      nav { padding: 1.5rem; gap: 1.5rem; }
+      .gallery-block { width: calc(100% - 3rem); height: 55vw; }
+      .hero-title { padding: 1.5rem 1.5rem; }
+      .bio-grid, .contact-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      main { padding: 0 6vw; }
+      section { padding: 5rem 0; }
+      footer { flex-direction: column; gap: 0.8rem; text-align: center; }
+      .gallery-dots { right: 1.5rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .slide { transition: none !important; }
+    }
+  </style>
+</head>
